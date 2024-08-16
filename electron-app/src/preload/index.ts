@@ -1,4 +1,4 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
 // Custom APIs for renderer
@@ -9,7 +9,13 @@ const api = {}
 // just add to the DOM global.
 if (process.contextIsolated) {
   try {
-    contextBridge.exposeInMainWorld('electron', electronAPI)
+    contextBridge.exposeInMainWorld('electron', {
+      ...electronAPI,
+      runCmd: (command: string) => ipcRenderer.send('run-cmd', command),
+      terminateCmd: () => ipcRenderer.send('terminate-cmd'),
+      onCmdOutput: (callback: any) =>
+        ipcRenderer.on('cmd-output', (event, ...args) => callback(...args))
+    })
     contextBridge.exposeInMainWorld('api', api)
   } catch (error) {
     console.error(error)

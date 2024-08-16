@@ -2,6 +2,9 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { exec, spawn } from 'child_process'
+
+let cmd
 
 function createWindow(): void {
   // Create the browser window.
@@ -13,7 +16,31 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      contextIsolation: true
+    }
+  })
+
+  // Listen for command execution requests
+  ipcMain.on('run-cmd', (event, command) => {
+    cmd = spawn(command, { shell: true })
+
+    cmd.stdout.on('data', (data) => {
+      event.reply('cmd-output', data.toString())
+    })
+
+    cmd.stderr.on('data', (data) => {
+      event.reply('cmd-output', `Error: ${data.toString()}`)
+    })
+
+    cmd.on('close', (code) => {
+      event.reply('cmd-output', `Process exited with code ${code}`)
+    })
+  })
+
+  ipcMain.on('terminate-cmd', () => {
+    if (cmd) {
+      cmd.kill('SIGTERM') // Send termination signal
     }
   })
 

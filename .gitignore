@@ -4,3 +4,16 @@ out
 .DS_Store
 *.log*
 .vscode
+
+.spec
+mgfs
+node_modules
+models
+precolator
+prep_dir
+preprocessed
+__pycache__
+
+run_search.build
+run_search.dist
+run_search.onefile-build
