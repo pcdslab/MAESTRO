@@ -1,8 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { exec, spawn } from 'child_process'
+import { spawn } from 'child_process'
+import fs from 'fs'
 
 let cmd
 
@@ -41,6 +42,23 @@ function createWindow(): void {
   ipcMain.on('terminate-cmd', () => {
     if (cmd) {
       cmd.kill('SIGTERM') // Send termination signal
+    }
+  })
+
+  ipcMain.handle('select-folder', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory']
+    })
+    return result.canceled ? null : result.filePaths[0]
+  })
+
+  ipcMain.handle('write-file', async (event, filePath, data) => {
+    try {
+      fs.writeFileSync(filePath, data, 'utf-8')
+      return { success: true }
+    } catch (error: any) {
+      console.error('Failed to write file:', error)
+      return { success: false, error: error.message }
     }
   })
 

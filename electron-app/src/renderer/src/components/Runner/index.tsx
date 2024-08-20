@@ -19,23 +19,13 @@ const style = {
 
 export const Runner = ({ handleClose }: { handleClose: any }) => {
   const [output, setOutput] = useState<string>('')
-  const [isRunning, setIsRunning] = useState<boolean>(true)
+  const [isRunning] = useState<boolean>(true)
   const outputRef = useRef<HTMLPreElement>(null)
 
   useEffect(() => {
     window.electron.onCmdOutput((data: any) => {
       setOutput((prev) => (prev ? `${prev}\n${data}` : data))
     })
-
-    // Example to handle when the process ends
-    // window.electron.onProcessEnd(() => {
-    //   setIsRunning(false)
-    // })
-
-    // return () => {
-    //   window.electron.removeAllListeners('onCmdOutput')
-    //   window.electron.removeAllListeners('onProcessEnd')
-    // }
   }, [])
 
   const handleTerminate = () => {

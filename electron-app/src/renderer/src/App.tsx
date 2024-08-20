@@ -1,22 +1,21 @@
-import { Box, Button, CssBaseline, Typography } from '@mui/material'
+import { Box, Button, CssBaseline } from '@mui/material'
 import ConfigForm from './components/ConfigForm'
 import Sidebar from './components/SideBar'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Runner } from './components/Runner'
 
-const specollate = import.meta.env.VITE_SPECOLLATE
-
-console.log(specollate)
-
+const specollate = `${import.meta.env.VITE_SPECOLLATE} -c ${import.meta.env.VITE_CONFIG}`
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
   const [show, setShow] = useState(false)
 
-  const runCommand = () => {
+  const runCommand = (gpu: boolean) => {
     setShow(true)
-    window.electron.runCmd(specollate)
+    if (gpu) {
+      window.electron.runCmd(`${specollate} -u gpu`)
+    } else {
+      window.electron.runCmd(specollate)
+    }
   }
 
   return (
@@ -24,8 +23,7 @@ function App(): JSX.Element {
       <CssBaseline />
       <Sidebar />
       <main style={{ marginLeft: 240, flexGrow: 1, padding: '16px' }}>
-        <ConfigForm />
-        <Button onClick={() => runCommand()}>Click</Button>
+        <ConfigForm run={runCommand} />
 
         {show && <Runner handleClose={setShow} />}
       </main>

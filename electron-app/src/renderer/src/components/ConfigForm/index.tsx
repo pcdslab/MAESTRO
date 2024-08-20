@@ -1,26 +1,49 @@
-import React, { useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import { TextField, Button, Container, Typography, Box } from '@mui/material'
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  FormControlLabel,
+  Checkbox
+} from '@mui/material'
+import FolderSelector from '../FolderSelector'
+import { configBuilder } from '@renderer/utils/helper'
+import { useState } from 'react'
 
-const ConfigForm = () => {
+const ConfigForm = ({ run }: any) => {
+  const [useGpu, setUseGpu] = useState(false)
+
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
     watch
-  } = useForm()
+  } = useForm({
+    defaultValues: {
+      spec_batch_size: 16384,
+      pep_batch_size: 4096,
+
+      search_spec_batch_size: 1024,
+
+      precursor_tolerance: 20,
+      precursor_tolerance_type: 'ppm',
+
+      keep_psms: 5,
+      num_mods: 1,
+      charge: 8
+    } as any
+  })
 
   const onSubmit = (data) => {
-    console.log(data)
-  }
-
-  console.log(watch())
-
-  const handleDirectoryChange = (event, fieldName) => {
-    console.log(event)
-    const directoryPath = event.target.files[0].webkitRelativePath.split('/')[0]
-    setValue(fieldName, directoryPath)
+    configBuilder(data)
+    run()
   }
 
   return (
@@ -28,95 +51,52 @@ const ConfigForm = () => {
       <Typography variant="h6" gutterBottom>
         Configuration Settings
       </Typography>
+      <Box sx={{ textAlign: 'left' }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={useGpu}
+              onChange={(e) => setUseGpu(e.target.checked)}
+              name="useGpu"
+              color="primary"
+            />
+          }
+          label="Use GPU"
+        />
+      </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          margin="normal"
-          fullWidth
-          label="Model Name"
-          variant="outlined"
-          {...register('model_name', { required: true })}
-          error={!!errors.model_name}
-          helperText={errors.model_name ? 'This field is required' : ''}
-        />
-        {/* <Box margin="normal"> */}
-        <input
-          type="file"
-          webkitdirectory="true"
-          directory="true"
-          // style={{ display: 'none' }}
-          onChange={(e) => console.log(e.target.files?.[0])}
-        />
-        {/* <TextField
-            margin="normal"
-            fullWidth
+        <Box>
+          <FolderSelector
             label="MGF Directory"
-            variant="outlined"
-            {...register('mgf_dir', { required: true })}
-            error={!!errors.mgf_dir}
-            helperText={errors.mgf_dir ? 'This field is required' : ''}
-            onClick={() => directoryInputRef.current.click()}
+            error={errors.mgf_dir ? 'This field is required' : ''}
+            onChange={(path) => setValue('mgf_dir', path)}
+            value={watch('mgf_dir')}
           />
         </Box>
         <Box margin="normal">
-          <input
-            type="file"
-            webkitdirectory="true"
-            directory="true"
-            style={{ display: 'none' }}
-            ref={directoryInputRef}
-            onChange={(e) => handleDirectoryChange(e, 'prep_dir')}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
+          <FolderSelector
             label="Preprocessed Directory"
-            variant="outlined"
-            {...register('prep_dir', { required: true })}
-            error={!!errors.prep_dir}
-            helperText={errors.prep_dir ? 'This field is required' : ''}
-            onClick={() => directoryInputRef.current.click()}
+            error={errors.prep_dir ? 'This field is required' : ''}
+            onChange={(path) => setValue('prep_dir', path)}
+            value={watch('prep_dir')}
           />
         </Box>
         <Box margin="normal">
-          <input
-            type="file"
-            webkitdirectory="true"
-            directory="true"
-            style={{ display: 'none' }}
-            ref={directoryInputRef}
-            onChange={(e) => handleDirectoryChange(e, 'pep_dir')}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
+          <FolderSelector
             label="Peptide Directory"
-            variant="outlined"
-            {...register('pep_dir', { required: true })}
-            error={!!errors.pep_dir}
-            helperText={errors.pep_dir ? 'This field is required' : ''}
-            onClick={() => directoryInputRef.current.click()}
+            error={errors.pep_dir ? 'This field is required' : ''}
+            onChange={(path) => setValue('pep_dir', path)}
+            value={watch('pep_dir')}
           />
         </Box>
         <Box margin="normal">
-          <input
-            type="file"
-            webkitdirectory="true"
-            directory="true"
-            style={{ display: 'none' }}
-            ref={directoryInputRef}
-            onChange={(e) => handleDirectoryChange(e, 'out_pin_dir')}
-          />
-          <TextField
-            margin="normal"
-            fullWidth
+          <FolderSelector
             label="Percolator Output Directory"
-            variant="outlined"
-            {...register('out_pin_dir', { required: true })}
-            error={!!errors.out_pin_dir}
-            helperText={errors.out_pin_dir ? 'This field is required' : ''}
-            onClick={() => directoryInputRef.current.click()}
+            error={errors.out_pin_dir ? 'This field is required' : ''}
+            onChange={(path) => setValue('out_pin_dir', path)}
+            value={watch('out_pin_dir')}
           />
-        </Box> */}
+        </Box>
         <TextField
           margin="normal"
           fullWidth
@@ -157,15 +137,19 @@ const ConfigForm = () => {
           error={!!errors.precursor_tolerance}
           helperText={errors.precursor_tolerance ? 'This field is required' : ''}
         />
-        <TextField
-          margin="normal"
-          fullWidth
-          label="Precursor Tolerance Type"
-          variant="outlined"
-          {...register('precursor_tolerance_type', { required: true })}
-          error={!!errors.precursor_tolerance_type}
-          helperText={errors.precursor_tolerance_type ? 'This field is required' : ''}
-        />
+        <FormControl fullWidth variant="outlined" margin="normal">
+          <InputLabel id="precursor-tolerance-type-label">Precursor Tolerance Type</InputLabel>
+          <Select
+            sx={{ textAlign: 'left' }}
+            labelId="precursor-tolerance-type-label"
+            value={watch('precursor_tolerance_type')}
+            onChange={(e) => setValue('precursor_tolerance_type', e.target.value)}
+            label="Precursor Tolerance Type" // This is important to link the label
+          >
+            <MenuItem value="ppm">ppm</MenuItem>
+            <MenuItem value="da">da</MenuItem>
+          </Select>
+        </FormControl>
         <TextField
           margin="normal"
           fullWidth
@@ -197,7 +181,7 @@ const ConfigForm = () => {
           helperText={errors.charge ? 'This field is required' : ''}
         />
         <Button type="submit" variant="contained" color="primary">
-          Save
+          Run SpeCollate
         </Button>
       </form>
     </Container>

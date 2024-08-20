@@ -1,5 +1,4 @@
 // Sidebar.js
-import React from 'react'
 import {
   Drawer,
   List,
@@ -15,7 +14,7 @@ import { styled } from '@mui/material/styles'
 
 const drawerWidth = 240
 
-const StyledDrawer = styled(Drawer)(({ theme }) => ({
+const StyledDrawer = styled(Drawer)(() => ({
   width: drawerWidth,
   flexShrink: 0,
   '& .MuiDrawer-paper': {
@@ -36,7 +35,7 @@ const Sidebar = () => {
   return (
     <StyledDrawer variant="permanent" anchor="left">
       <Toolbar>
-        <Typography variant="h6">Mastro</Typography>
+        <Typography variant="h6">Maestro</Typography>
       </Toolbar>
       <Divider />
       <List>
