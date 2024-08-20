@@ -10,7 +10,7 @@ mgfs
 node_modules
 models
 precolator
-prep_dir
+pep_dir
 preprocessed
 __pycache__
 
