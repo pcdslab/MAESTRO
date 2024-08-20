@@ -1,21 +1,9 @@
-[preprocess]
+const MODEL = import.meta.env.VITE_MODEL
+const CONFIG = import.meta.env.VITE_CONFIG
 
-# For raptor
-#in_tensor_dir : ./data/train-ready/pred-full/
-
-# For comet
-#in_tensor_dir : /scratch/mtari008/37154933/pred-full-deepnovo/
-
-# For expanse
-in_tensor_dir : /disk/raptor-2/mtari008/data/deepsnap/train-ready/nist_massiv_80k_no_ch_graymass-semi/
-
-############ INPUT PARAMETERS ############
+export const configBuilder = async (data: any) => {
+  const config = `
 [input]
-
-# file paths. Ignore the three path parameters below.
-msp_files : /oasis/projects/nsf/wmu101/mtari008/DeepSNAP/data/msp
-mgf_files : /oasis/projects/nsf/wmu101/mtari008/DeepSNAP/data/
-db_peps_path : /expanse/lustre/projects/wmu101/mtari008/DeepSNAP/data/db_peps/db-peps.pkl
 
 spec_size : 80000 # The array size to store a spectrum.
 
@@ -34,41 +22,41 @@ master_port : 12345 # if you get an error that port is already in use change thi
 
 # This is model will be loaded during search. It will be loaded from the models directory.
 # 22 at the end is the epoch number. That's how the models are saved.
-model_name : /home/syntist/Documents/MAESTRO/SpeCollate/models/specollate_model.pt
+model_name : ${MODEL}
 
 # absolute directory path with mgf file to be searched. files must have .mgf extension.
-mgf_dir : /home/syntist/Documents/MAESTRO/SpeCollate/mgfs
+mgf_dir : ${data.mgf_dir}
 
 # path where preprocessed mgf spectra from the above directory will be placed.
-prep_dir : /home/syntist/Documents/MAESTRO/SpeCollate/preprocessed
+prep_dir : ${data.prep_dir}
 
 # directory path containing peptide file obtained from OpenMS Digestor tool.
-pep_dir : /home/syntist/Documents/MAESTRO/SpeCollate/pep_dir
+pep_dir : ${data.pep_dir}
 
 # directory path where percolator input files will be placed.
 # Use crux percolator tool to analyze these files.
-out_pin_dir : /home/syntist/Documents/MAESTRO/SpeCollate/precolator
+out_pin_dir : ${data.out_pin_dir}
 
 # Batch sizes for forward pass through the network. 
-# These sizes have been tested for 12 GBs of GPU memory.
-spec_batch_size : 16384
-pep_batch_size : 4096
+# These sizes have been tested for 12 GBs of GPU memory. 16384
+spec_batch_size : ${data.spec_batch_size}
+pep_batch_size : ${data.pep_batch_size}
 
 # Batch size for database search. 1024 seems to work better.
-search_spec_batch_size : 1024
+search_spec_batch_size : ${data.search_spec_batch_size}
 
-precursor_tolerance : 20 # Precursor tolerance to use during database search (Da or ppm)
-precursor_tolerance_type : ppm # either ppm or Da
+precursor_tolerance : ${data.precursor_tolerance} # Precursor tolerance to use during database search (Da or ppm)
+precursor_tolerance_type : ${data.precursor_tolerance_type} # either ppm or Da
 
-keep_psms : 5 # Number of top scoring psms to keep
+keep_psms : ${data.keep_psms} # Number of top scoring psms to keep
 
 # Number of modified peptides to be generated to search against. 
 # Different than the one in input section
-num_mods : 1
+num_mods : ${data.num_mods}
 
 # charge filter for input spectra.
 # Note that spectra with all charges will be searched against charge independent peptide embeddings.
-charge: 8
+charge: ${data.charge}
 
 ############ MACHINE LEARNING PARAMETERS ############
 [ml]
@@ -111,3 +99,6 @@ spec_size : 8000
 charge : 2
 use_mods : False
 batch_size : 1024
+`
+  await window.electron.ipcRenderer.invoke('write-file', CONFIG, config)
+}
