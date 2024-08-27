@@ -12,7 +12,7 @@ const style = {
   pt: 2,
   px: 4,
   pb: 3,
-  width: '60%',
+  width: '75%',
   maxHeight: '80%',
   overflow: 'auto'
 }
@@ -66,7 +66,7 @@ export const Runner = ({ handleClose }: { handleClose: any }) => {
             background: '#f4f4f4',
             padding: '8px',
             borderRadius: '4px',
-            maxHeight: '300px',
+            maxHeight: '400px',
             overflow: 'auto'
           }}
         >

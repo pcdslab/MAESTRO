@@ -28,7 +28,8 @@
     "@mui/icons-material": "^5.16.5",
     "@mui/material": "^5.16.5",
     "electron-updater": "^6.1.7",
-    "react-hook-form": "^7.52.1"
+    "react-hook-form": "^7.52.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
