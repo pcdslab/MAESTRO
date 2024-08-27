@@ -26,6 +26,7 @@ const ConfigForm = ({ run }: any) => {
     formState: { errors },
     watch
   } = useForm({
+    mode: 'onTouched',
     defaultValues: {
       spec_batch_size: 16384,
       pep_batch_size: 4096,
@@ -41,6 +42,7 @@ const ConfigForm = ({ run }: any) => {
     } as any
   })
 
+  console.log(errors)
   const onSubmit = (data) => {
     configBuilder(data)
     run()
@@ -68,16 +70,18 @@ const ConfigForm = ({ run }: any) => {
         <Box>
           <FolderSelector
             label="MGF Directory"
+            {...register('mgf_dir', { required: true })}
             error={errors.mgf_dir ? 'This field is required' : ''}
-            onChange={(path) => setValue('mgf_dir', path)}
+            onChange={(path) => setValue('mgf_dir', path, { shouldValidate: true })}
             value={watch('mgf_dir')}
           />
         </Box>
         <Box margin="normal">
           <FolderSelector
             label="Preprocessed Directory"
+            {...register('prep_dir', { required: true })}
             error={errors.prep_dir ? 'This field is required' : ''}
-            onChange={(path) => setValue('prep_dir', path)}
+            onChange={(path) => setValue('prep_dir', path, { shouldValidate: true })}
             value={watch('prep_dir')}
           />
         </Box>
@@ -85,15 +89,17 @@ const ConfigForm = ({ run }: any) => {
           <FolderSelector
             label="Peptide Directory"
             error={errors.pep_dir ? 'This field is required' : ''}
-            onChange={(path) => setValue('pep_dir', path)}
+            {...register('pep_dir', { required: true })}
+            onChange={(path) => setValue('pep_dir', path, { shouldValidate: true })}
             value={watch('pep_dir')}
           />
         </Box>
         <Box margin="normal">
           <FolderSelector
             label="Percolator Output Directory"
+            {...register('out_pin_dir', { required: true })}
             error={errors.out_pin_dir ? 'This field is required' : ''}
-            onChange={(path) => setValue('out_pin_dir', path)}
+            onChange={(path) => setValue('out_pin_dir', path, { shouldValidate: true })}
             value={watch('out_pin_dir')}
           />
         </Box>

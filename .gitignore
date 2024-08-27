@@ -6,6 +6,7 @@ out
 .vscode
 
 .spec
+.python
 mgfs
 node_modules
 models

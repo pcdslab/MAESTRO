@@ -35,7 +35,7 @@ if __name__ == '__main__':
     print(f"-------- Using {device} --------")
     
     if args.config:
-        tqdm.write("config: %s" % args.path)
+        tqdm.write("config: %s" % args.config)
 
     config.PARAM_PATH = args.config if args.config else f"{os.path.dirname(os.path.realpath(__file__))}/config.ini"
         
