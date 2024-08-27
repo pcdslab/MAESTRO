@@ -62,3 +62,7 @@ echo "VITE_MODEL=\"$path/models/specollate_model.pt\"" >> "$ENV_FILE"
 echo "VITE_CONFIG=\"$path/electron-app/config.ini\"" >> "$ENV_FILE"
 
 echo "Environment variables written to $ENV_FILE"
+
+cd $path/electron-app
+npm install
+npm start
