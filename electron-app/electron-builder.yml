@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: electron-app
+appId: com.maestro.app
+productName: maestro-app
 directories:
   buildResources: build
 files:
@@ -31,8 +31,8 @@ dmg:
 linux:
   target:
     - AppImage
-    - snap
-    - deb
+    # - snap
+    # - deb
   maintainer: electronjs.org
   category: Utility
 appImage:
