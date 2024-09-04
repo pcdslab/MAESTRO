@@ -1,0 +1,3 @@
+[submodule "MAESTRO"]
+    path = MAESTRO
+    url = https://github.com/syntist/MAESTRO
