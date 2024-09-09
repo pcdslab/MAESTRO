@@ -3,10 +3,10 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - release-fix
   pull_request:
     branches:
-      - main
+      - release-fix
 
 jobs:
   create-release:
@@ -92,6 +92,7 @@ jobs:
       - name: Install Nuitka
         run: |
           python -m pip install --upgrade pip
+          python -m pip install requests
           python -m pip install nuitka
 
       - name: Build Standalone Installer
