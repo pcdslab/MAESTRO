@@ -1,6 +1,6 @@
 {
   "name": "maestro",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
   "author": "example.com",
@@ -28,6 +28,7 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.5",
     "@mui/material": "^5.16.5",
+    "dotenv": "^16.4.5",
     "electron-updater": "^6.1.7",
     "react-hook-form": "^7.52.1",
     "yup": "^1.4.0"

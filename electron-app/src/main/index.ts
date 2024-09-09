@@ -1,9 +1,25 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { spawn } from 'child_process'
 import fs from 'fs'
+
+let configPath: string
+
+if (fs.existsSync(path.resolve(process.cwd(), '../../env.json'))) {
+  configPath = path.resolve(process.cwd(), '../../env.json')
+} else if (fs.existsSync(path.resolve(process.cwd(), './env.json'))) {
+  configPath = path.resolve(process.cwd(), './env.json')
+} else {
+  console.log('env.json can not be found, exiting')
+  process.exit()
+}
+
+console.log(configPath)
+
+const rawData = fs.readFileSync(configPath, 'utf-8')
+const config = JSON.parse(rawData)
 
 let cmd
 
@@ -52,7 +68,7 @@ function createWindow(): void {
     return result.canceled ? null : result.filePaths[0]
   })
 
-  ipcMain.handle('write-file', async (event, filePath, data) => {
+  ipcMain.handle('write-file', async (_event, filePath, data) => {
     try {
       fs.writeFileSync(filePath, data, 'utf-8')
       return { success: true }
@@ -60,6 +76,10 @@ function createWindow(): void {
       console.error('Failed to write file:', error)
       return { success: false, error: error.message }
     }
+  })
+
+  ipcMain.handle('get-env-variable', (_event, variableName) => {
+    return config[variableName]
   })
 
   mainWindow.on('ready-to-show', () => {
