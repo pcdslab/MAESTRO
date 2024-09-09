@@ -10,9 +10,9 @@ from zipfile import ZipFile
 MODEL_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/specollate_model_weights.pt"
 
 
-url = f'https://api.github.com/repos/pcdslab/MAESTRO/releases/latest'
+url = f'https://api.github.com/repos/syntist/MAESTRO/releases/latest'
 response = requests.get(url)
-
+tag_name = response.json()["tag_name"]
 
 def check_for_electron_app():
     """Check if any files match the pattern and return their paths."""
@@ -31,7 +31,18 @@ def download_file(url, directory):
         print(f"File {os.path.basename(url)} already exists in {directory}.")
     else:
         print(f"Downloading {os.path.basename(url)} to {directory}...")
-        urllib.request.urlretrieve(url, filename)
+        try:
+            response = requests.get(url, stream=True)
+            response.raise_for_status()  # Check if the request was successful
+            
+            with open(filename, 'wb') as file:
+                for chunk in response.iter_content(chunk_size=8192):
+                    file.write(chunk)
+                    
+            print(f"Download completed: {filename}")
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred: {e}")
+    
     return filename
 
 def extract_tar_gz(tar_gz_path, extract_to):
@@ -64,9 +75,9 @@ def main():
         print("Specollate Doesn't Exist, Downloading")
         file = download_file(response.json()["zipball_url"], electron_app_dir)
         extract_zip(file, electron_app_dir)
-        run_command(f"cd pcdslab-MAESTRO* && cp -r SpeCollate {electron_app_dir}")
-        run_command(f"rm -rf file")
-        run_command(f"rm -rf pcdslab-MAESTRO*")
+        run_command(f"cd *-MAESTRO* && cp -r SpeCollate {electron_app_dir}")
+        run_command(f"rm -rf {file}")
+        run_command(f"rm -rf *-MAESTRO*")
     
     if check_for_electron_app():
         app_name = check_for_electron_app()[0]
