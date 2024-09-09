@@ -1,10 +1,12 @@
-import { Box, Button, CssBaseline } from '@mui/material'
+import { Box, CssBaseline } from '@mui/material'
 import ConfigForm from './components/ConfigForm'
 import Sidebar from './components/SideBar'
 import { useState } from 'react'
 import { Runner } from './components/Runner'
 
-const specollate = `${import.meta.env.VITE_SPECOLLATE} -c ${import.meta.env.VITE_CONFIG}`
+const specollate = `${await window.electron.getEnvVariable('SPECOLLATE')} -c ${await window.electron.getEnvVariable('SPECOLLATE_CONFIG')}`
+
+console.log(specollate)
 
 function App(): JSX.Element {
   const [show, setShow] = useState(false)

@@ -14,7 +14,8 @@ if (process.contextIsolated) {
       runCmd: (command: string) => ipcRenderer.send('run-cmd', command),
       terminateCmd: () => ipcRenderer.send('terminate-cmd'),
       onCmdOutput: (callback: any) =>
-        ipcRenderer.on('cmd-output', (event, ...args) => callback(...args))
+        ipcRenderer.on('cmd-output', (event, ...args) => callback(...args)),
+      getEnvVariable: (key: any) => ipcRenderer.invoke('get-env-variable', key)
     })
     contextBridge.exposeInMainWorld('api', api)
   } catch (error) {
