@@ -3,10 +3,10 @@ name: Release
 on:
   push:
     branches:
-      - release-fix
+      - main
   pull_request:
     branches:
-      - release-fix
+      - main
 
 jobs:
   create-release:
