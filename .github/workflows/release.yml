@@ -3,10 +3,10 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - build-on-ubuntu-20.04
   pull_request:
     branches:
-      - main
+      - build-on-ubuntu-20.04
 
 jobs:
   create-release:
