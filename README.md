@@ -15,6 +15,15 @@ cd electron-app
 npm install
 ```
 
-## To Run We can just run installer.sh
-chmod 600 installer.sh
-./installer.sh
+## To Run We can just run Installer
+
+Download installer.bin from release
+
+Require Dependencies  >= Ubuntu 20.04 
+```
+sudo apt install build-essential fuse
+
+```
+chmod +x installer.bin
+./installer.bin
+```

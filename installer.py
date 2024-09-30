@@ -10,7 +10,7 @@ from zipfile import ZipFile
 MODEL_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/specollate_model_weights.pt"
 
 
-url = f'https://api.github.com/repos/syntist/MAESTRO/releases/latest'
+url = f'https://api.github.com/repos/pcdslab/MAESTRO/releases/latest'
 response = requests.get(url)
 tag_name = response.json()["tag_name"]
 
