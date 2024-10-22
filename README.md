@@ -22,7 +22,9 @@ Download installer.bin from release
 Require Dependencies  >= Ubuntu 20.04 
 ```
 sudo apt install build-essential fuse
+```
 
+Now Run the Installer
 ```
 chmod +x installer.bin
 ./installer.bin

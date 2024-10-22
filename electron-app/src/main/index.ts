@@ -11,12 +11,12 @@ if (fs.existsSync(path.resolve(process.cwd(), '../../env.json'))) {
   configPath = path.resolve(process.cwd(), '../../env.json')
 } else if (fs.existsSync(path.resolve(process.cwd(), './env.json'))) {
   configPath = path.resolve(process.cwd(), './env.json')
+} else if (fs.existsSync(path.resolve(process.cwd(), '../env.json'))) {
+  configPath = path.resolve(process.cwd(), '../env.json')
 } else {
   console.log('env.json can not be found, exiting')
   process.exit()
 }
-
-console.log(configPath)
 
 const rawData = fs.readFileSync(configPath, 'utf-8')
 const config = JSON.parse(rawData)

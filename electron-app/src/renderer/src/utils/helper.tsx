@@ -1,5 +1,6 @@
-const MODEL = import.meta.env.VITE_MODEL
-const CONFIG = import.meta.env.VITE_CONFIG
+const MODEL = await window.electron.getEnvVariable('MODEL')
+const MODEL_2 = await window.electron.getEnvVariable('MODEL_2')
+const CONFIG = await window.electron.getEnvVariable('SPECOLLATE_CONFIG')
 
 export const configBuilder = async (data: any) => {
   const config = `
@@ -99,6 +100,139 @@ spec_size : 8000
 charge : 2
 use_mods : False
 batch_size : 1024
+`
+  await window.electron.ipcRenderer.invoke('write-file', CONFIG, config)
+}
+
+
+export const configBuilderV2 = async (data: any) => {
+  const config = `
+[preprocess]
+
+# For raptor
+# in_tensor_dir : ./data/train-ready/pred-full/
+
+# For comet
+# in_tensor_dir : /scratch/mtari008/37154933/pred-full-deepnovo/
+
+# For expanse
+in_tensor_dir : /lclhome/mtari008/job_2436627/nist_massiv_80k_ch_graymass/
+
+############ INPUT PARAMETERS ############
+[input]
+
+# file paths
+mgf_dir : /lclhome/mtari008/data/spectra/labeled/fruitfly.PXD004120
+prep_dir: sample_data/preprocess_files
+
+; val_dir : /lclhome/mtari008/data/deepatles/train_ready/nist-masive-deepnovo-5k-ch1-3-len7-30-200-mod-mass
+
+# The array size to store a spectrum.
+spec_size : 50000
+
+# Max charge value to be used to read spectrum files.
+charge : 5
+
+# Whether to use modifications or not.
+use_mods : True
+
+# Max mods per peptide
+num_mods: 5
+
+# Number of species the training dataset contains.
+num_species : 9 
+
+master_port : 12347
+
+rank : 1
+
+############ DATABASE SEARCH PARAMETERS ############
+[search]
+
+mgf_dir: ${data.mgf_dir}
+prep_path: ${data.prep_dir}
+pep_dir: ${data.pep_dir}
+out_pin_dir : ${data.out_pin_dir}
+
+model_name : ${MODEL_2}
+specollate_model_path: ${MODEL}
+
+
+# Batch sizes for forward pass through the network
+spec_batch_size : ${data.spec_batch_size}
+pep_batch_size : ${data.pep_batch_size}
+
+# Batch size for database search
+search_spec_batch_size : ${data.search_spec_batch_size}
+
+precursor_tolerance : ${data.precursor_tolerance} # Precursor tolerance to use during database search (Da or ppm)
+precursor_tolerance_type : ${data.precursor_tolerance_type} # either ppm or Da
+
+keep_psms : ${data.keep_psms} # Number of top scoring psms to keep
+
+# Number of modified peptides to be generated to search against. 
+# Different than the one in input section
+num_mods : ${data.num_mods}
+
+charge: ${data.charge} # charge to be used during search
+
+############ FILTERING PARAMETERS ############
+[filter]
+length_filter: True
+len_tol_neg: -1
+len_tol_pos: 1
+missed_cleavages_filter: True
+modification_filter: True
+
+############### OUT OF CORE PARAMETERS ##############
+[ooc]
+chunk_size: 10000000
+
+############ MACHINE LEARNING PARAMETERS ############
+[ml]
+
+batch_size : 1024
+
+test_size : 0.2
+
+max_spec_len : 200
+min_pep_len: 7
+max_pep_len : 30
+# slightly larger than max_pep_len to account for modifications
+pep_seq_len : 36
+max_clvs : 2
+embedding_dim : 1024
+encoder_layers : 4
+num_heads : 16
+
+train_count : 0
+
+ce_weight_clv : 1
+ce_weight_mod : 1
+mse_weight : 3
+
+dropout : 0.3
+
+lr : 0.0001
+
+weight_decay : 0.0001
+
+epochs : 5
+
+margin : 0.2
+
+read_split_listing : False
+
+############ DEFAULT VALUES ############
+# DO NOT CHANGE
+[default]
+msp_file : /data/human_consensus_final_true_lib.msp
+mgf_files : /data/
+spec_size : 8000
+charge : 2
+use_mods : False
+batch_size : 1024
+
 `
   await window.electron.ipcRenderer.invoke('write-file', CONFIG, config)
 }

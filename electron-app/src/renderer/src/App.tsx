@@ -6,7 +6,7 @@ import { Runner } from './components/Runner'
 
 const specollate = `${await window.electron.getEnvVariable('SPECOLLATE')} -c ${await window.electron.getEnvVariable('SPECOLLATE_CONFIG')}`
 
-console.log(specollate)
+const proteorift = `${await window.electron.getEnvVariable('PROTEORIFT')} -c ${await window.electron.getEnvVariable('SPECOLLATE_CONFIG')}`
 
 function App(): JSX.Element {
   const [show, setShow] = useState(false)
@@ -14,9 +14,9 @@ function App(): JSX.Element {
   const runCommand = (gpu: boolean) => {
     setShow(true)
     if (gpu) {
-      window.electron.runCmd(`${specollate} -u gpu`)
+      window.electron.runCmd(`${proteorift} -u gpu`)
     } else {
-      window.electron.runCmd(specollate)
+      window.electron.runCmd(proteorift)
     }
   }
 

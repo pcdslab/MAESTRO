@@ -13,7 +13,7 @@ import {
   Checkbox
 } from '@mui/material'
 import FolderSelector from '../FolderSelector'
-import { configBuilder } from '@renderer/utils/helper'
+import { configBuilder, configBuilderV2 } from '@renderer/utils/helper'
 import { useState } from 'react'
 
 const ConfigForm = ({ run }: any) => {
@@ -44,7 +44,7 @@ const ConfigForm = ({ run }: any) => {
 
   console.log(errors)
   const onSubmit = (data) => {
-    configBuilder(data)
+    configBuilderV2(data)
     run()
   }
 
