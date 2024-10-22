@@ -18,3 +18,7 @@ __pycache__
 run_search.build
 run_search.dist
 run_search.onefile-build
+ProteoRift-main
+config.ini
+env.json
+maestro-*

@@ -6,8 +6,10 @@ from pathlib import Path
 import requests
 import glob
 from zipfile import ZipFile
+import argparse
 
 MODEL_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/specollate_model_weights.pt"
+MODEL_2_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/proteorift_model_weights.pt"
 
 
 url = f'https://api.github.com/repos/pcdslab/MAESTRO/releases/latest'
@@ -67,6 +69,7 @@ def main():
     # Copy SpeCollate to electron-app
     electron_app_dir = Path(path)
     spe_collate_dest = Path(path) / "SpeCollate"
+    proteo_dest = Path(path) / "ProteoRift-main"
     app_name = ""
     
     if spe_collate_dest.exists():
@@ -78,6 +81,16 @@ def main():
         run_command(f"cd *-MAESTRO* && cp -r SpeCollate {electron_app_dir}")
         run_command(f"rm -rf {file}")
         run_command(f"rm -rf *-MAESTRO*")
+
+    if proteo_dest.exists():
+        print("ProteoRift Exist")
+    else:
+        print("ProteoRift Doesn't Exist, Downloading")
+        file = download_file("https://github.com/pcdslab/ProteoRift/archive/refs/heads/main.zip", electron_app_dir)
+        extract_zip(file, electron_app_dir)
+
+        print(file)
+        run_command(f"rm -rf {file}")
     
     if check_for_electron_app():
         app_name = check_for_electron_app()[0]
@@ -87,6 +100,7 @@ def main():
         
     # Download the model file
     model_filepath = download_file(MODEL_URL, models_dir)
+    model_2_filepath = download_file(MODEL_2_URL, models_dir)
 
     # Install Python if not installed
     python_bin = python_dir / "bin/python3"
@@ -115,7 +129,9 @@ def main():
     with env_file.open("a") as f:
         f.write("{\n")
         f.write(f'"SPECOLLATE":"{python_bin} {spe_collate_dest}/run_search.py",\n')
+        f.write(f'"PROTEORIFT":"{python_bin} {proteo_dest}/run_search.py",\n')
         f.write(f'"MODEL":"{model_filepath}",\n')
+        f.write(f'"MODEL_2":"{model_2_filepath}",\n')
         f.write(f'"SPECOLLATE_CONFIG":"{Path(path)}/config.ini"\n')
         f.write("}")
 
@@ -123,9 +139,22 @@ def main():
 
     # Install npm dependencies and start the Electron app
     os.chdir(electron_app_dir)
-    
-    run_command(f"chmod +x {electron_app_dir}/{app_name}" )
-    run_command(f"{electron_app_dir}/{app_name}")
+
+    parser = argparse.ArgumentParser(description="Script with --dev flag")
+    parser.add_argument(
+        '--dev', 
+        action='store_true', 
+        help='Run the script in development mode'
+    )
+
+    args = parser.parse_args()
+
+    if args.dev:
+        os.chdir(f"{electron_app_dir}/electron-app")
+        run_command(f"npm run dev" )
+    else:
+        run_command(f"chmod +x {electron_app_dir}/{app_name}" )
+        run_command(f"{electron_app_dir}/{app_name}")
 
 if __name__ == "__main__":
     main()
