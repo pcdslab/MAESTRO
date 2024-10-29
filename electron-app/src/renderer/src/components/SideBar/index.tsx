@@ -45,12 +45,12 @@ const Sidebar = () => {
           </ListItemIcon>
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button>
+        {/* <ListItem button>
           <ListItemIcon>
             <ListIcon />
           </ListItemIcon>
           <ListItemText primary="Previous Runs Data" />
-        </ListItem>
+        </ListItem> */}
       </List>
     </StyledDrawer>
   )

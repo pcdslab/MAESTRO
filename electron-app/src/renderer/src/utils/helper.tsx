@@ -104,7 +104,6 @@ batch_size : 1024
   await window.electron.ipcRenderer.invoke('write-file', CONFIG, config)
 }
 
-
 export const configBuilderV2 = async (data: any) => {
   const config = `
 [preprocess]
@@ -178,11 +177,11 @@ charge: ${data.charge} # charge to be used during search
 
 ############ FILTERING PARAMETERS ############
 [filter]
-length_filter: True
-len_tol_neg: -1
-len_tol_pos: 1
-missed_cleavages_filter: True
-modification_filter: True
+length_filter: ${data.length_filter ? 'True' : 'False'}
+len_tol_neg: ${data.len_tol_neg}
+len_tol_pos: ${data.len_tol_pos}
+missed_cleavages_filter: ${data.missed_cleavages_filter ? 'True' : 'False'}
+modification_filter: ${data.modification_filter ? 'True' : 'False'}
 
 ############### OUT OF CORE PARAMETERS ##############
 [ooc]
