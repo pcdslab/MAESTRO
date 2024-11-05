@@ -7,6 +7,7 @@ import requests
 import glob
 from zipfile import ZipFile
 import argparse
+import platform
 
 MODEL_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/specollate_model_weights.pt"
 MODEL_2_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/proteorift_model_weights.pt"
@@ -71,16 +72,6 @@ def main():
     spe_collate_dest = Path(path) / "SpeCollate"
     proteo_dest = Path(path) / "ProteoRift-main"
     app_name = ""
-    
-    if spe_collate_dest.exists():
-        print("SpeCollate Exist")
-    else:
-        print("Specollate Doesn't Exist, Downloading")
-        file = download_file(response.json()["zipball_url"], electron_app_dir)
-        extract_zip(file, electron_app_dir)
-        run_command(f"cd *-MAESTRO* && cp -r SpeCollate {electron_app_dir}")
-        run_command(f"rm -rf {file}")
-        run_command(f"rm -rf *-MAESTRO*")
 
     if proteo_dest.exists():
         print("ProteoRift Exist")
@@ -90,7 +81,11 @@ def main():
         extract_zip(file, electron_app_dir)
 
         print(file)
-        run_command(f"rm -rf {file}")
+
+        if(platform.system() == "Windows"):
+            run_command(f"del {file}")
+        else:
+            run_command(f"rm -rf {file}")
     
     if check_for_electron_app():
         app_name = check_for_electron_app()[0]
@@ -102,19 +97,35 @@ def main():
     model_filepath = download_file(MODEL_URL, models_dir)
     model_2_filepath = download_file(MODEL_2_URL, models_dir)
 
-    # Install Python if not installed
-    python_bin = python_dir / "bin/python3"
-    if python_bin.exists():
-        print("Python Installed")
-    else:
-        python_tar = download_file("https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz", python_dir)
-        extract_tar_gz(python_tar, python_dir)
-        python_src_dir = python_dir / "Python-3.10.14"
-        os.chdir(python_src_dir)
-        run_command(f"./configure --prefix={python_dir}")
-        run_command(f"make -j{os.cpu_count()}")
-        run_command("make install")
 
+    # Define the directory where Python should be installed
+    python_bin = python_dir / "bin/python3" if platform.system() != "Windows" else Path("py -3.10")
+
+    # Check if Python is installed
+    if platform.system() == "Windows":
+        python_check_command = "py -3.10 --version"
+    else:
+        python_check_command = f"{python_bin} --version"
+
+    try:
+        if os.system(python_check_command) == 0:
+            print("Python 3.10 Installed")
+        else:
+            raise Exception("Python not found")
+    except Exception:
+        if platform.system() == "Windows":
+            print("Python 3.10 not found. Please install it from https://www.python.org/downloads/")
+        else:
+            # Linux/macOS installation steps
+            python_tar = download_file("https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz", python_dir)
+            extract_tar_gz(python_tar, python_dir)
+            python_src_dir = python_dir / "Python-3.10.14"
+            os.chdir(python_src_dir)
+            run_command(f"./configure --prefix={python_dir}")
+            run_command(f"make -j{os.cpu_count()}")
+            run_command("make install")
+
+    print(python_bin)
     # Install dependencies
     run_command(f"{python_bin} -m pip install -r {spe_collate_dest}/requirements.txt")
 
