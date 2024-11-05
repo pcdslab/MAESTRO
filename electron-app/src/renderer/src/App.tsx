@@ -14,7 +14,7 @@ function App(): JSX.Element {
   const runCommand = (gpu: boolean) => {
     setShow(true)
     if (gpu) {
-      window.electron.runCmd(`${proteorift} -u gpu`)
+      window.electron.runCmd(`CUDA_VISIBLE_DEVICES="" ${proteorift}`)
     } else {
       window.electron.runCmd(proteorift)
     }
