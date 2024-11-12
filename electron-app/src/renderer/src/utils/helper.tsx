@@ -153,9 +153,8 @@ prep_path: ${data.prep_dir}
 pep_dir: ${data.pep_dir}
 out_pin_dir : ${data.out_pin_dir}
 
-model_name : ${MODEL_2}
-specollate_model_path: ${MODEL}
-
+model_name : ${MODEL_2?.replaceAll('/', '\\')}
+specollate_model_path: ${MODEL?.replaceAll('/', '\\')}
 
 # Batch sizes for forward pass through the network
 spec_batch_size : ${data.spec_batch_size}

@@ -23,3 +23,4 @@ config.ini
 env.json
 maestro-*
 ProteoRift
+.venv

@@ -8,6 +8,7 @@ import glob
 from zipfile import ZipFile
 import argparse
 import platform
+import venv
 
 MODEL_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/specollate_model_weights.pt"
 MODEL_2_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/proteorift_model_weights.pt"
@@ -99,6 +100,7 @@ def main():
 
 
     # Define the directory where Python should be installed
+    venv_path = Path(path) / ".venv"
     python_bin = python_dir / "bin/python3" if platform.system() != "Windows" else Path("py -3.10")
 
     # Check if Python is installed
@@ -110,6 +112,12 @@ def main():
     try:
         if os.system(python_check_command) == 0:
             print("Python 3.10 Installed")
+            if not venv_path.exists():
+                venv.create(venv_path, with_pip=True)
+            else:
+                print("Virtual environment already exists.")
+            python_bin = venv_path / "Scripts/python.exe"
+
         else:
             raise Exception("Python not found")
     except Exception:
@@ -125,7 +133,9 @@ def main():
             run_command(f"make -j{os.cpu_count()}")
             run_command("make install")
 
-    print(python_bin)
+    print("Installing PyTorch")
+    run_command(f"{python_bin} -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121")
+
     # Install dependencies
     run_command(f"{python_bin} -m pip install -r {spe_collate_dest}/requirements.txt")
 
@@ -139,11 +149,11 @@ def main():
 
     with env_file.open("a") as f:
         f.write("{\n")
-        f.write(f'"SPECOLLATE":"{python_bin} {spe_collate_dest}/run_search.py",\n')
-        f.write(f'"PROTEORIFT":"{python_bin} {proteo_dest}/run_search.py",\n')
-        f.write(f'"MODEL":"{model_filepath}",\n')
-        f.write(f'"MODEL_2":"{model_2_filepath}",\n')
-        f.write(f'"SPECOLLATE_CONFIG":"{Path(path)}/config.ini"\n')
+        f.write(f'"SPECOLLATE":"{Path(python_bin).as_posix()} {(Path(spe_collate_dest) / "run_search.py").as_posix()}",\n')
+        f.write(f'"PROTEORIFT":"{Path(python_bin).as_posix()} {(Path(proteo_dest) / "run_search.py").as_posix()}",\n')
+        f.write(f'"MODEL":"{Path(model_filepath).as_posix()}",\n')
+        f.write(f'"MODEL_2":"{Path(model_2_filepath).as_posix()}",\n')
+        f.write(f'"SPECOLLATE_CONFIG":"{(Path(path) / "config.ini").as_posix()}"\n')
         f.write("}")
 
     print(f"Environment variables written to {env_file}")

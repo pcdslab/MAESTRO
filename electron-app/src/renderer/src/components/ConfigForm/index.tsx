@@ -49,9 +49,9 @@ const ConfigForm = ({ run }: any) => {
     } as any
   })
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data: any) => {
     configBuilderV2(data)
-    run()
+    run(useGpu)
   }
 
   return (

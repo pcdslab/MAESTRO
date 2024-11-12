@@ -82,6 +82,8 @@ function createWindow(): void {
     return config[variableName]
   })
 
+  ipcMain.handle('isWindows', () => process.platform === 'win32');
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })

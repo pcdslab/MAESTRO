@@ -23,10 +23,20 @@ export const Runner = ({ handleClose }: { handleClose: any }) => {
   const outputRef = useRef<HTMLPreElement>(null)
 
   useEffect(() => {
-    window.electron.onCmdOutput((data: any) => {
-      setOutput((prev) => (prev ? `${prev}\n${data}` : data))
-    })
-  }, [])
+    const handleCmdOutput = (data: any) => {
+        setOutput((prev) => (prev ? `${prev}\n${data}` : data));
+    };
+
+    console.log('hi')
+
+    // Add the event listener
+    window.electron.onCmdOutput(handleCmdOutput);
+
+    // Cleanup function to remove the event listener
+    return () => {
+        window.electron.offCmdOutput(handleCmdOutput);
+    };
+}, []);
 
   const handleTerminate = () => {
     window.electron.terminateCmd()
@@ -48,7 +58,7 @@ export const Runner = ({ handleClose }: { handleClose: any }) => {
     >
       <Box sx={style}>
         <Typography id="terminal-modal-title" variant="h6" component="h2">
-          Running SpeCollate
+          Running ProteoRift
         </Typography>
         <Typography id="terminal-modal-description" sx={{ mb: 2 }}>
           Output from command:
