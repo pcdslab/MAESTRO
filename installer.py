@@ -14,7 +14,7 @@ MODEL_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/spec
 MODEL_2_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/proteorift_model_weights.pt"
 
 
-url = f'https://api.github.com/repos/pcdslab/MAESTRO/releases/latest'
+url = f'https://api.github.com/repos/syntist/MAESTRO/releases/latest'
 response = requests.get(url)
 tag_name = response.json()["tag_name"]
 
@@ -89,22 +89,19 @@ def main():
             run_command(f"rm -rf {file}")
 
     if(platform.system() == "Windows"):
-        if check_for_electron_app():
-            print(check_for_electron_app())
-            if(check_for_electron_app()[0] == "maestro-electron"):
-                app_name = f"{check_for_electron_app()[0]}/maestro.exe"
-            elif("zip" in check_for_electron_app()[0]):
-                extract_zip(check_for_electron_app()[0], 'maestro-electron')
-                run_command(f"del {check_for_electron_app()[0]}")
-                app_name = f"{check_for_electron_app()[0]}/maestro.exe"
+        if(check_for_electron_app() and check_for_electron_app()[0] == "maestro-electron"):
+            app_name = f"{check_for_electron_app()[0]}/maestro.exe"
         else:
-            print('No Maestro')
-            exit()
+            download_file(response.json()["assets"][3]["browser_download_url"], electron_app_dir)
+            extract_zip(check_for_electron_app()[0], 'maestro-electron')
+            run_command(f"del {check_for_electron_app()[0]}")
+            app_name = f"{check_for_electron_app()[0]}/maestro.exe"
+
     else:
         if check_for_electron_app():
             app_name = check_for_electron_app()[0]
         else:
-            download_file(response.json()["assets"][1]["browser_download_url"], electron_app_dir)
+            download_file(response.json()["assets"][2]["browser_download_url"], electron_app_dir)
             app_name = check_for_electron_app()[0]
         
     # Download the model file
