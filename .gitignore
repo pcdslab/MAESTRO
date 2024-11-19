@@ -24,3 +24,4 @@ env.json
 maestro-*
 ProteoRift
 .venv
+installer*

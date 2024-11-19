@@ -9,6 +9,7 @@ from zipfile import ZipFile
 import argparse
 import platform
 import venv
+from tqdm import tqdm
 
 MODEL_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/specollate_model_weights.pt"
 MODEL_2_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/proteorift_model_weights.pt"
@@ -30,19 +31,32 @@ def run_command(command, cwd=None):
 def download_file(url, directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
+
     filename = os.path.join(directory, os.path.basename(url))
+    
     if os.path.exists(filename):
         print(f"File {os.path.basename(url)} already exists in {directory}.")
     else:
         print(f"Downloading {os.path.basename(url)} to {directory}...")
+        
         try:
             response = requests.get(url, stream=True)
             response.raise_for_status()  # Check if the request was successful
             
-            with open(filename, 'wb') as file:
+            # Get the total file size from headers
+            total_size = int(response.headers.get('content-length', 0))
+            
+            with open(filename, 'wb') as file, tqdm(
+                desc=os.path.basename(url),
+                total=total_size,
+                unit='B',
+                unit_scale=True,
+                unit_divisor=1024,
+            ) as bar:
                 for chunk in response.iter_content(chunk_size=8192):
                     file.write(chunk)
-                    
+                    bar.update(len(chunk))  # Update the progress bar
+            
             print(f"Download completed: {filename}")
         except requests.exceptions.RequestException as e:
             print(f"An error occurred: {e}")
@@ -73,6 +87,28 @@ def main():
     spe_collate_dest = Path(path) / "SpeCollate"
     proteo_dest = Path(path) / "ProteoRift-main"
     app_name = ""
+
+    if spe_collate_dest.exists():
+        print("SpeCollate Exist")
+    else:
+        print("Specollate Doesn't Exist, Downloading")
+        file = download_file(response.json()["zipball_url"], electron_app_dir)
+        extract_zip(file, electron_app_dir)
+
+        if(platform.system() == "Windows"):
+            spec_dir = [d for d in os.listdir() if "-MAESTRO" in d][0]
+            run_command(f"mkdir SpeCollate")
+
+            os.chdir(spec_dir)
+            
+            run_command(f"xcopy /s /e SpeCollate {electron_app_dir}\SpeCollate")
+            os.chdir("..")  # Go back to the parent directory
+            run_command(f"del {file}")
+            run_command(f"rmdir /S /Q {spec_dir}")
+        else:
+            run_command(f"cd *-MAESTRO* && cp -r SpeCollate {electron_app_dir}")
+            run_command(f"rm -rf {file}")
+            run_command(f"rm -rf *-MAESTRO*")
 
     if proteo_dest.exists():
         print("ProteoRift Exist")
