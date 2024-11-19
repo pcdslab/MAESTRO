@@ -138,6 +138,7 @@ jobs:
           asset_path=$(find ./dist -type f -name '*.zip')
           echo "asset_path=$asset_path" >> $GITHUB_ENV
           echo "asset_name=$(basename $asset_path)" >> $GITHUB_ENV
+        shell: bash
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -169,7 +170,7 @@ jobs:
 
       - name: Build Standalone Installer
         run: |
-          python -m nuitka installer.py --standalone --onefile
+          python -m nuitka installer.py --standalone --onefile --disable-dll-dependency-cache
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
