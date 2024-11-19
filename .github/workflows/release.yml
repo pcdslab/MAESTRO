@@ -130,7 +130,7 @@ jobs:
         run: npm install
 
       - name: Build and Package for Windows
-        run: npm run release:win
+        run: npm run release
 
       - name: Get Release Asset Path
         id: get_asset_path
