@@ -20,7 +20,6 @@ response = requests.get(url)
 tag_name = response.json()["tag_name"]
 
 def check_for_electron_app():
-    """Check if any files match the pattern and return their paths."""
     files = glob.glob("maestro*")
     return files
 
@@ -116,8 +115,6 @@ def main():
         print("ProteoRift Doesn't Exist, Downloading")
         file = download_file("https://github.com/pcdslab/ProteoRift/archive/refs/heads/main.zip", electron_app_dir)
         extract_zip(file, electron_app_dir)
-
-        print(file)
 
         if(platform.system() == "Windows"):
             run_command(f"del {file}")
