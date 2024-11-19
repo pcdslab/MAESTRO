@@ -163,6 +163,11 @@ jobs:
         with:
           python-version: '3.10'
 
+    - name: Download Dependency Walker
+      run: |
+        Invoke-WebRequest -Uri "https://github.com/Nuitka/depends/releases/download/v2.2.0/depends.zip" -OutFile "depends.zip"
+        Expand-Archive -Path "depends.zip" -DestinationPath "C:\\Users\\RUNNER~1\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLOADS\\depends"
+
       - name: Install Nuitka
         run: |
           python -m pip install --upgrade pip
