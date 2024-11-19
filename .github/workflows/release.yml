@@ -169,6 +169,8 @@ jobs:
           python -m pip install nuitka requests
 
       - name: Build Standalone Installer
+        env:
+          NUITKA_DOWNLOADS: yes
         run: |
           python -m nuitka installer.py --standalone --onefile --disable-dll-dependency-cache
 
