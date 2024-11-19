@@ -14,7 +14,7 @@ if (process.contextIsolated) {
       runCmd: (command: string) => ipcRenderer.send('run-cmd', command),
       terminateCmd: () => ipcRenderer.send('terminate-cmd'),
       onCmdOutput: (callback: any) =>
-        ipcRenderer.on('cmd-output', (event, ...args) => callback(...args)),
+        ipcRenderer.on('cmd-output', (_, ...args) => callback(...args)),
       offCmdOutput: (callback) => ipcRenderer.removeListener('cmd-output', callback),
       getEnvVariable: (key: any) => ipcRenderer.invoke('get-env-variable', key),
       isWindows: async () => await ipcRenderer.invoke('isWindows')

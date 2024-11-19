@@ -87,12 +87,25 @@ def main():
             run_command(f"del {file}")
         else:
             run_command(f"rm -rf {file}")
-    
-    if check_for_electron_app():
-        app_name = check_for_electron_app()[0]
+
+    if(platform.system() == "Windows"):
+        if check_for_electron_app():
+            print(check_for_electron_app())
+            if(check_for_electron_app()[0] == "maestro-electron"):
+                app_name = f"{check_for_electron_app()[0]}/maestro.exe"
+            elif("zip" in check_for_electron_app()[0]):
+                extract_zip(check_for_electron_app()[0], 'maestro-electron')
+                run_command(f"del {check_for_electron_app()[0]}")
+                app_name = f"{check_for_electron_app()[0]}/maestro.exe"
+        else:
+            print('No Maestro')
+            exit()
     else:
-        download_file(response.json()["assets"][1]["browser_download_url"], electron_app_dir)
-        app_name = check_for_electron_app()[0]
+        if check_for_electron_app():
+            app_name = check_for_electron_app()[0]
+        else:
+            download_file(response.json()["assets"][1]["browser_download_url"], electron_app_dir)
+            app_name = check_for_electron_app()[0]
         
     # Download the model file
     model_filepath = download_file(MODEL_URL, models_dir)
@@ -174,7 +187,8 @@ def main():
         os.chdir(f"{electron_app_dir}/electron-app")
         run_command(f"npm run dev" )
     else:
-        run_command(f"chmod +x {electron_app_dir}/{app_name}" )
+        if(platform.system() != "Windows"):
+            run_command(f"chmod +x {electron_app_dir}/{app_name}" )
         run_command(f"{electron_app_dir}/{app_name}")
 
 if __name__ == "__main__":

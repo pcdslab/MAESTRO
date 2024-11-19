@@ -24,19 +24,19 @@ export const Runner = ({ handleClose }: { handleClose: any }) => {
 
   useEffect(() => {
     const handleCmdOutput = (data: any) => {
-        setOutput((prev) => (prev ? `${prev}\n${data}` : data));
-    };
+      setOutput((prev) => (prev ? `${prev}\n${data}` : data))
+    }
 
     console.log('hi')
 
     // Add the event listener
-    window.electron.onCmdOutput(handleCmdOutput);
+    window.electron.onCmdOutput(handleCmdOutput)
 
     // Cleanup function to remove the event listener
     return () => {
-        window.electron.offCmdOutput(handleCmdOutput);
-    };
-}, []);
+      window.electron.offCmdOutput(handleCmdOutput)
+    }
+  }, [])
 
   const handleTerminate = () => {
     window.electron.terminateCmd()
