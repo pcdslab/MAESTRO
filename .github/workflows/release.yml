@@ -108,3 +108,75 @@ jobs:
           asset_path: ./installer.bin
           asset_name: installer.bin
           asset_content_type: application/octet-stream
+
+  electron-release-win:
+    needs: create-release
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        working-directory: ./electron-app
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and Package for Windows
+        run: npm run release:win
+
+      - name: Get Release Asset Path
+        id: get_asset_path
+        run: |
+          asset_path=$(find ./dist -type f -name '*.zip')
+          echo "asset_path=$asset_path" >> $GITHUB_ENV
+          echo "asset_name=$(basename $asset_path)" >> $GITHUB_ENV
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./electron-app/dist/${{ env.asset_name }}
+          asset_name: ${{ env.asset_name }}
+          asset_content_type: application/zip
+
+  installer-release-win:
+    needs: create-release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Nuitka
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install nuitka requests
+
+      - name: Build Standalone Installer
+        run: |
+          python -m nuitka installer.py --standalone --onefile
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./installer.exe
+          asset_name: installer.exe
+          asset_content_type: application/octet-stream
