@@ -82,7 +82,7 @@ def main():
     # Copy SpeCollate to electron-app
     electron_app_dir = Path(path)
     spe_collate_dest = Path(path) / "SpeCollate"
-    proteo_dest = Path(path) / "ProteoRift-main"
+    proteo_dest = Path(path) / "ProteoRift-GUI-version"
     app_name = ""
 
     if spe_collate_dest.exists():
@@ -111,7 +111,7 @@ def main():
         print("ProteoRift Exist")
     else:
         print("ProteoRift Doesn't Exist, Downloading")
-        file = download_file("https://github.com/pcdslab/ProteoRift/archive/refs/heads/main.zip", electron_app_dir)
+        file = download_file("https://codeload.github.com/pcdslab/ProteoRift/zip/refs/heads/GUI-version", electron_app_dir)
         extract_zip(file, electron_app_dir)
 
         if(platform.system() == "Windows"):
