@@ -163,7 +163,7 @@ def main():
             raise Exception("Python not found")
     except Exception:
         if platform.system() == "Windows":
-            print("Python 3.10 not found. Please install it from https://www.python.org/downloads/")
+            print("Python 3.10 not found. Please install it from https://github.com/adang1345/PythonWindows/blob/master/3.10.14/python-3.10.14-amd64-full.exe")
         else:
             # Linux/macOS installation steps
             python_tar = download_file("https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz", python_dir)

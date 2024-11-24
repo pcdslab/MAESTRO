@@ -3,10 +3,10 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - Windows-implementation-and-working
   pull_request:
     branches:
-      - main
+      - Windows-implementation-and-working
 
 jobs:
   create-release:

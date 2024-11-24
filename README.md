@@ -1,23 +1,26 @@
 # MAESTRO
 An interconnected set of open source machine-learning models for large-scale mass spectrometry based omics analysis.
 
-## Setup ENV for SpeCollate
+## Windows
+
+### Pre-requist:
 ```
-conda create -n specollate python=3.10 anaconda
-conda activate specollate
-python -m pip install -r SpeCollate/requirements.txt
+python 3.10
+CUDA Toolkit
 ```
 
-## Setup ENV for Electron
-```
-nvm install 20
-cd electron-app
-npm install
-```
+If you have nvidia gpu, download the cuda toolkit from here https://developer.nvidia.com/cuda-downloads
 
-## To Run We can just run Installer
+To run on windows, go to https://github.com/pcdslab/MAESTRO/release, download the latest installer.exe
 
-Download installer.bin from release
+It will download the required packages and run the application.
+
+If you face any bugs/issues please report the issues Thanks.
+
+
+## Linux
+
+Download installer.bin from release https://github.com/pcdslab/MAESTRO/release
 
 Require Dependencies  >= Ubuntu 20.04 
 ```
@@ -28,4 +31,13 @@ Now Run the Installer
 ```
 chmod +x installer.bin
 ./installer.bin
+```
+
+If you face any bugs/issues please report the issues Thanks.
+
+## Setup ENV for Electron
+```
+nvm install 20
+cd electron-app
+npm install
 ```
