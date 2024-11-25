@@ -141,14 +141,17 @@ def main():
 
 
     # Define the directory where Python should be installed
+    
     venv_path = Path(path) / ".venv"
     python_bin = python_dir / "bin/python3" if platform.system() != "Windows" else Path("py -3.10")
+    
 
     # Check if Python is installed
     if platform.system() == "Windows":
         python_check_command = "py -3.10 --version"
     else:
         python_check_command = f"{python_bin} --version"
+        
 
     try:
         if os.system(python_check_command) == 0:
@@ -157,7 +160,9 @@ def main():
                 venv.create(venv_path, with_pip=True)
             else:
                 print("Virtual environment already exists.")
-            python_bin = venv_path / "Scripts/python.exe"
+                
+            if(platform.system == "Windows"):
+                python_bin = venv_path / "Scripts/python.exe"
 
         else:
             raise Exception("Python not found")

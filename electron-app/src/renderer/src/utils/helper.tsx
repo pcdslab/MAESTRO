@@ -2,6 +2,8 @@ const MODEL = await window.electron.getEnvVariable('MODEL')
 const MODEL_2 = await window.electron.getEnvVariable('MODEL_2')
 const CONFIG = await window.electron.getEnvVariable('SPECOLLATE_CONFIG')
 
+const isWindows = await window.electron.isWindows()
+
 export const configBuilder = async (data: any) => {
   const config = `
 [input]
@@ -153,8 +155,8 @@ prep_path: ${data.prep_dir}
 pep_dir: ${data.pep_dir}
 out_pin_dir : ${data.out_pin_dir}
 
-model_name : ${MODEL_2?.replaceAll('/', '\\')}
-specollate_model_path: ${MODEL?.replaceAll('/', '\\')}
+model_name : ${isWindows ? MODEL_2?.replaceAll('/', '\\') : MODEL_2}
+specollate_model_path: ${isWindows ? MODEL?.replaceAll('/', '\\'): MODEL}
 
 # Batch sizes for forward pass through the network
 spec_batch_size : ${data.spec_batch_size}

@@ -18,16 +18,22 @@ const style = {
 }
 
 export const Runner = ({ handleClose }: { handleClose: any }) => {
+  const [result, setResult] = useState('')
   const [output, setOutput] = useState<string>('')
-  const [isRunning] = useState<boolean>(true)
+  const [isRunning, setIsRunning] = useState<boolean>(true)
   const outputRef = useRef<HTMLPreElement>(null)
 
   useEffect(() => {
     const handleCmdOutput = (data: any) => {
       setOutput((prev) => (prev ? `${prev}\n${data}` : data))
-    }
 
-    console.log('hi')
+      if (data.includes('Process exited with code')) {
+        if (data.includes('Process exited with code 0')) setResult('Success')
+        else setResult('Failed')
+
+        setIsRunning(false)
+      }
+    }
 
     // Add the event listener
     window.electron.onCmdOutput(handleCmdOutput)
@@ -63,10 +69,14 @@ export const Runner = ({ handleClose }: { handleClose: any }) => {
         <Typography id="terminal-modal-description" sx={{ mb: 2 }}>
           Output from command:
         </Typography>
-        {isRunning && (
+        {isRunning ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
             <CircularProgress size={20} />
             <Typography variant="body2">Processing...</Typography>
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <Typography variant="body2">{result}</Typography>
           </Box>
         )}
         <pre
@@ -83,8 +93,8 @@ export const Runner = ({ handleClose }: { handleClose: any }) => {
           {output || 'Waiting for output...'}
         </pre>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-          <Button variant="contained" color="error" onClick={handleTerminate} disabled={!isRunning}>
-            Terminate
+          <Button variant="contained" color="error" onClick={handleTerminate}>
+            {isRunning ? 'Terminate' : 'Close'}
           </Button>
         </Box>
       </Box>

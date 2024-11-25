@@ -22,6 +22,6 @@ ProteoRift-main
 config.ini
 env.json
 maestro-*
-ProteoRift
+ProteoRift*
 .venv
 installer*
