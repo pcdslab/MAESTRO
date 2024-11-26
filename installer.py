@@ -159,7 +159,7 @@ def main():
            
             if(platform.system() == "Windows"):
                 if not venv_path.exists():
-                    venv.create(venv_path, with_pip=True)
+                    run_command(f"py -3.10 -m venv {venv_path}")
                 else:
                     print("Virtual environment already exists.")
                 
@@ -167,8 +167,7 @@ def main():
 
         else:
             raise Exception("Python not found")
-    except Exception as e:
-        print(e)
+    except Exception:
         if platform.system() == "Windows":
             print("Python 3.10 not found. Please install it from https://github.com/adang1345/PythonWindows/blob/master/3.10.14/python-3.10.14-amd64-full.exe")
             input('Press any key to exit...')
