@@ -156,12 +156,12 @@ def main():
     try:
         if os.system(python_check_command) == 0:
             print("Python 3.10 Installed")
-            if not venv_path.exists():
-                venv.create(venv_path, with_pip=True)
-            else:
-                print("Virtual environment already exists.")
-                
+           
             if(platform.system() == "Windows"):
+                if not venv_path.exists():
+                    venv.create(venv_path, with_pip=True)
+                else:
+                    print("Virtual environment already exists.")
                 python_bin = venv_path / "Scripts/python.exe"
 
         else:
@@ -169,6 +169,8 @@ def main():
     except Exception:
         if platform.system() == "Windows":
             print("Python 3.10 not found. Please install it from https://github.com/adang1345/PythonWindows/blob/master/3.10.14/python-3.10.14-amd64-full.exe")
+            input('Press any key to exit...')
+            exit()
         else:
             # Linux/macOS installation steps
             python_tar = download_file("https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz", python_dir)
