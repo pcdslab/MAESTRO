@@ -3,10 +3,10 @@ name: Release
 on:
   push:
     branches:
-      - main
+      - fix-for-windows-python-installer
   pull_request:
     branches:
-      - main
+      - fix-for-windows-python-installer
 
 jobs:
   create-release:
