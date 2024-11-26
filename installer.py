@@ -13,7 +13,7 @@ from tqdm import tqdm
 MODEL_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/specollate_model_weights.pt"
 MODEL_2_URL = "https://github.com/pcdslab/ProteoRift/releases/download/V1.0.0/proteorift_model_weights.pt"
 
-url = f'https://api.github.com/repos/pcdslab/MAESTRO/releases/latest'
+url = f'https://api.github.com/repos/syntist/MAESTRO/releases/latest'
 response = requests.get(url)
 tag_name = response.json()["tag_name"]
 
@@ -161,7 +161,7 @@ def main():
             else:
                 print("Virtual environment already exists.")
                 
-            if(platform.system == "Windows"):
+            if(platform.system() == "Windows"):
                 python_bin = venv_path / "Scripts/python.exe"
 
         else:
