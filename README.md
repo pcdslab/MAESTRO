@@ -11,16 +11,22 @@ CUDA Toolkit
 
 If you have nvidia gpu, download the cuda toolkit from here https://developer.nvidia.com/cuda-downloads
 
-To run on windows, go to https://github.com/pcdslab/MAESTRO/release, download the latest installer.exe
+If you don't have python 3.10 you can download it from here, https://github.com/adang1345/PythonWindows/blob/master/3.10.14/python-3.10.14-amd64-full.exe
 
-It will download the required packages and run the application.
+To run on windows,
+1. Go to https://github.com/pcdslab/MAESTRO/releases, download the latest installer-win.zip
+2. Extact the installer-win.zip.
+3. Run installer.exe from the extracted folder
+4. It will download the required packages and run the application.
 
 If you face any bugs/issues please report the issues Thanks.
 
 
 ## Linux
 
-Download installer.bin from release https://github.com/pcdslab/MAESTRO/release
+Download installer.bin from release https://github.com/pcdslab/MAESTRO/releases
+
+### Pre-requist:
 
 Require Dependencies  >= Ubuntu 20.04 
 ```
