@@ -7,5 +7,7 @@ declare module '@electron-toolkit/preload' {
     runCmd: any
     onCmdOutput: any
     terminateCmd: any
+    isWindows: any
+    offCmdOutput: any
   }
 }

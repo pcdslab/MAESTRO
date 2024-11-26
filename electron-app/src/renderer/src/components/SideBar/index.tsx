@@ -9,7 +9,6 @@ import {
   Typography
 } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
-import ListIcon from '@mui/icons-material/List'
 import { styled } from '@mui/material/styles'
 
 const drawerWidth = 240

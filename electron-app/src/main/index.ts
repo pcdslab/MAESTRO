@@ -5,6 +5,8 @@ import icon from '../../resources/icon.png?asset'
 import { spawn } from 'child_process'
 import fs from 'fs'
 
+console.log(path.resolve(process.cwd(), './env.json'))
+
 let configPath: string
 
 if (fs.existsSync(path.resolve(process.cwd(), '../../env.json'))) {
@@ -81,6 +83,8 @@ function createWindow(): void {
   ipcMain.handle('get-env-variable', (_event, variableName) => {
     return config[variableName]
   })
+
+  ipcMain.handle('isWindows', () => process.platform === 'win32')
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()

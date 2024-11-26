@@ -10,10 +10,15 @@ files:
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
   - '!**/env.json'
+asar: true
 asarUnpack:
-  - resources/**
+  - "**/node_modules/**/*"
+  - "resources/**/*"
+  - "dist/**/*"
 win:
-  executableName: electron-app
+  executableName: maestro
+  target:
+    - zip
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -38,7 +43,7 @@ linux:
   category: Utility
 appImage:
   artifactName: ${name}-${version}.${ext}
-npmRebuild: false
+npmRebuild: true
 publish:
   provider: generic
   url: https://example.com/auto-updates

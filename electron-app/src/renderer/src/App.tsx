@@ -4,20 +4,28 @@ import Sidebar from './components/SideBar'
 import { useState } from 'react'
 import { Runner } from './components/Runner'
 
-const specollate = `${await window.electron.getEnvVariable('SPECOLLATE')} -c ${await window.electron.getEnvVariable('SPECOLLATE_CONFIG')}`
+// const specollate = `${await window.electron.getEnvVariable('SPECOLLATE')} -c ${await window.electron.getEnvVariable('SPECOLLATE_CONFIG')}`
 
 const proteorift = `${await window.electron.getEnvVariable('PROTEORIFT')} -c ${await window.electron.getEnvVariable('SPECOLLATE_CONFIG')}`
 
 function App(): JSX.Element {
   const [show, setShow] = useState(false)
 
-  const runCommand = (gpu: boolean) => {
+  const runCommand = async (gpu: boolean) => {
     setShow(true)
+    const isWindows = await window.electron.isWindows()
+
+    let cmd
+
     if (gpu) {
-      window.electron.runCmd(`CUDA_VISIBLE_DEVICES="" ${proteorift}`)
+      cmd = proteorift
     } else {
-      window.electron.runCmd(proteorift)
+      cmd = isWindows
+        ? `set CUDA_VISIBLE_DEVICES= & ${proteorift}` // Windows format
+        : `CUDA_VISIBLE_DEVICES="" ${proteorift}` // Linux/macOS format
     }
+
+    window.electron.runCmd(cmd)
   }
 
   return (
