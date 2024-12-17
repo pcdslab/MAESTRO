@@ -67,6 +67,9 @@ def extract_tar_gz(tar_gz_path, extract_to):
 def extract_zip(zip_path, extract_to):
     with ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(extract_to)
+        
+def path_spacer(path):
+    return f"\"{path}\""
 
 def main():
     print("Installer Running")
@@ -151,7 +154,7 @@ def main():
     if platform.system() == "Windows":
         python_check_command = "py -3.10 --version"
     else:
-        python_check_command = f"{python_bin} --version"
+        python_check_command = f"{path_spacer(python_bin)} --version"
         
 
     try:
@@ -178,10 +181,15 @@ def main():
             python_tar = download_file("https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz", python_dir)
             extract_tar_gz(python_tar, python_dir)
             python_src_dir = python_dir / "Python-3.10.14"
+            
             os.chdir(python_src_dir)
-            run_command(f"./configure --prefix={python_dir}")
+         
+            run_command(f'./configure --prefix=/tmp/Python-3.10.14')
             run_command(f"make -j{os.cpu_count()}")
             run_command("make install")
+                        
+            run_command(f"cp -R /tmp/Python-3.10.14/* {path_spacer(python_dir)}")
+            run_command("rm -rf /tmp/Python-3.10.14")
 
     print("Installing PyTorch")
     run_command(f"\"{python_bin}\" -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121")
@@ -226,8 +234,8 @@ def main():
         run_command(f"npm run dev" )
     else:
         if(platform.system() != "Windows"):
-            run_command(f"chmod +x {electron_app_dir}/{app_name}" )
-        run_command(f"{electron_app_dir}/{app_name}")
+            run_command(f"chmod +x \"{electron_app_dir}/{app_name}\"" )
+        run_command(f"\"{electron_app_dir}/{app_name}\"")
 
 if __name__ == "__main__":
     main()
