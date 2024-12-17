@@ -109,10 +109,9 @@ const ConfigForm = ({ run }: any) => {
               fullWidth
               label="Spectra Batch Size (GiB)"
               variant="outlined"
-              
               type="number"
               inputProps={{
-                step: .01
+                step: 0.01
               }}
               {...register('spec_batch_size', { required: true })}
               error={!!errors.spec_batch_size}
@@ -127,7 +126,7 @@ const ConfigForm = ({ run }: any) => {
               variant="outlined"
               type="number"
               inputProps={{
-                step: .01
+                step: 0.01
               }}
               {...register('pep_batch_size', { required: true })}
               error={!!errors.pep_batch_size}
@@ -142,7 +141,7 @@ const ConfigForm = ({ run }: any) => {
               variant="outlined"
               type="number"
               inputProps={{
-                step: .01
+                step: 0.01
               }}
               {...register('search_spec_batch_size', { required: true })}
               error={!!errors.search_spec_batch_size}
@@ -216,7 +215,9 @@ const ConfigForm = ({ run }: any) => {
 
           <Box width={'100%'} sx={{ marginLeft: 2, marginTop: 2, fontFamily: 500 }}>
             <Divider />
-            <Typography variant='h5' mt={2} mb={2}>Search space reduction using the following</Typography>
+            <Typography variant="h5" mt={2} mb={2}>
+              Search space reduction using the following
+            </Typography>
           </Box>
           {/* Filters */}
           <Box display="flex" justifyContent="center" width={'100%'}>
@@ -286,8 +287,8 @@ const ConfigForm = ({ run }: any) => {
           {/* Text fields at the bottom */}
         </Grid>
 
-        <Button type="submit" variant="contained" color="primary">
-          Run ProteoRift
+        <Button sx={{ marginTop: 2 }} type="submit" variant="contained" color="primary">
+          Run Maestro
         </Button>
       </form>
     </Container>

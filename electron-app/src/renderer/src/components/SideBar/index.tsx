@@ -6,10 +6,12 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
-  Typography
+  Typography,
+  Box
 } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import { styled } from '@mui/material/styles'
+import logo from '../../assets/logo-1.png'
 
 const drawerWidth = 240
 
@@ -33,24 +35,31 @@ const Toolbar = styled('div')(({ theme }) => ({
 const Sidebar = () => {
   return (
     <StyledDrawer variant="permanent" anchor="left">
-      <Toolbar>
-        <Typography variant="h6"><b>MAESTRO</b></Typography>
-      </Toolbar>
-      <Divider />
-      <List>
-        <ListItem>
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText primary="Home" />
-        </ListItem>
-        {/* <ListItem button>
-          <ListItemIcon>
-            <ListIcon />
-          </ListItemIcon>
-          <ListItemText primary="Previous Runs Data" />
-        </ListItem> */}
-      </List>
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <Toolbar>
+          <Typography variant="h6">
+            <b>MAESTRO</b>
+          </Typography>
+        </Toolbar>
+        <Divider />
+        <List sx={{ flexGrow: 1 }}>
+          <ListItem>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Home" />
+          </ListItem>
+          {/* <ListItem button>
+        <ListItemIcon>
+          <ListIcon />
+        </ListItemIcon>
+        <ListItemText primary="Previous Runs Data" />
+      </ListItem> */}
+        </List>
+        <Box sx={{ p: 2 }}>
+          <img src={logo} width={150} />
+        </Box>
+      </Box>
     </StyledDrawer>
   )
 }
