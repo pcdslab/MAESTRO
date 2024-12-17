@@ -34,11 +34,11 @@ const Sidebar = () => {
   return (
     <StyledDrawer variant="permanent" anchor="left">
       <Toolbar>
-        <Typography variant="h6">Maestro</Typography>
+        <Typography variant="h6"><b>MAESTRO</b></Typography>
       </Toolbar>
       <Divider />
       <List>
-        <ListItem button>
+        <ListItem>
           <ListItemIcon>
             <HomeIcon />
           </ListItemIcon>

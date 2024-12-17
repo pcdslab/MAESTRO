@@ -151,19 +151,19 @@ rank : 1
 [search]
 
 mgf_dir: ${data.mgf_dir}
-prep_path: ${data.prep_dir}
+prep_path: ${data.mgf_dir}${isWindows ? '\\preprocess' : '/preprocessed'}
 pep_dir: ${data.pep_dir}
 out_pin_dir : ${data.out_pin_dir}
 
 model_name : ${isWindows ? MODEL_2?.replaceAll('/', '\\') : MODEL_2}
-specollate_model_path: ${isWindows ? MODEL?.replaceAll('/', '\\'): MODEL}
+specollate_model_path: ${isWindows ? MODEL?.replaceAll('/', '\\') : MODEL}
 
 # Batch sizes for forward pass through the network
-spec_batch_size : ${data.spec_batch_size}
-pep_batch_size : ${data.pep_batch_size}
+spec_batch_size : ${data.spec_batch_size * 1024}
+pep_batch_size : ${data.pep_batch_size * 1024}
 
 # Batch size for database search
-search_spec_batch_size : ${data.search_spec_batch_size}
+search_spec_batch_size : ${data.search_spec_batch_size * 1024}
 
 precursor_tolerance : ${data.precursor_tolerance} # Precursor tolerance to use during database search (Da or ppm)
 precursor_tolerance_type : ${data.precursor_tolerance_type} # either ppm or Da

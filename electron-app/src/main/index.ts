@@ -1,7 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/saeedlogo.png?asset'
 import { spawn } from 'child_process'
 import fs from 'fs'
 
@@ -25,7 +25,9 @@ const config = JSON.parse(rawData)
 
 let cmd
 
-function createWindow(): void {
+
+
+function createWindow(): void { 
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 900,
