@@ -6,7 +6,7 @@ import { Runner } from './components/Runner'
 
 // const specollate = `${await window.electron.getEnvVariable('SPECOLLATE')} -c ${await window.electron.getEnvVariable('SPECOLLATE_CONFIG')}`
 
-const proteorift = `${await window.electron.getEnvVariable('PROTEORIFT')} -c ${await window.electron.getEnvVariable('SPECOLLATE_CONFIG')}`
+let proteorift = `\"${await window.electron.getEnvVariable('python')}\"  \"${await window.electron.getEnvVariable('PROTEORIFT')}\" -c \"${await window.electron.getEnvVariable('SPECOLLATE_CONFIG')}\"`
 
 function App(): JSX.Element {
   const [show, setShow] = useState(false)

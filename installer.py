@@ -98,13 +98,13 @@ def main():
 
             os.chdir(spec_dir)
             
-            run_command(f"xcopy /s /e SpeCollate {electron_app_dir}\SpeCollate")
+            run_command(f"xcopy /s /e SpeCollate \"{electron_app_dir}\SpeCollate\"")
             os.chdir("..")  # Go back to the parent directory
-            run_command(f"del {file}")
-            run_command(f"rmdir /S /Q {spec_dir}")
+            run_command(f"del \"{file}\"")
+            run_command(f"rmdir /S /Q \"{spec_dir}\"")
         else:
-            run_command(f"cd *-MAESTRO* && cp -r SpeCollate {electron_app_dir}")
-            run_command(f"rm -rf {file}")
+            run_command(f"cd *-MAESTRO* && cp -r SpeCollate \"{electron_app_dir}\"")
+            run_command(f"rm -rf \"{file}\"")
             run_command(f"rm -rf *-MAESTRO*")
 
     if proteo_dest.exists():
@@ -115,9 +115,9 @@ def main():
         extract_zip(file, electron_app_dir)
 
         if(platform.system() == "Windows"):
-            run_command(f"del {file}")
+            run_command(f"del \"{file}\"")
         else:
-            run_command(f"rm -rf {file}")
+            run_command(f"rm -rf \"{file}\"")
 
     if(platform.system() == "Windows"):
         if(check_for_electron_app() and check_for_electron_app()[0] == "maestro-electron"):
@@ -125,7 +125,7 @@ def main():
         else:
             download_file(response.json()["assets"][3]["browser_download_url"], electron_app_dir)
             extract_zip(check_for_electron_app()[0], 'maestro-electron')
-            run_command(f"del {check_for_electron_app()[0]}")
+            run_command(f"del \"{check_for_electron_app()[0]}\"")
             app_name = f"{check_for_electron_app()[0]}/maestro.exe"
 
     else:
@@ -143,6 +143,7 @@ def main():
     # Define the directory where Python should be installed
     
     venv_path = Path(path) / ".venv"
+
     python_bin = python_dir / "bin/python3" if platform.system() != "Windows" else Path("py -3.10")
     
 
@@ -159,7 +160,7 @@ def main():
            
             if(platform.system() == "Windows"):
                 if not venv_path.exists():
-                    run_command(f"py -3.10 -m venv {venv_path}")
+                    run_command(f"py -3.10 -m venv \"{venv_path}\"")
                 else:
                     print("Virtual environment already exists.")
                 
@@ -183,10 +184,10 @@ def main():
             run_command("make install")
 
     print("Installing PyTorch")
-    run_command(f"{python_bin} -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121")
+    run_command(f"\"{python_bin}\" -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121")
 
     # Install dependencies
-    run_command(f"{python_bin} -m pip install -r {spe_collate_dest}/requirements.txt")
+    run_command(f"\"{python_bin}\" -m pip install -r \"{spe_collate_dest}/requirements.txt\"")
 
     # Set up .env file
     env_file = electron_app_dir / "env.json"
@@ -198,8 +199,9 @@ def main():
 
     with env_file.open("a") as f:
         f.write("{\n")
-        f.write(f'"SPECOLLATE":"{Path(python_bin).as_posix()} {(Path(spe_collate_dest) / "run_search.py").as_posix()}",\n')
-        f.write(f'"PROTEORIFT":"{Path(python_bin).as_posix()} {(Path(proteo_dest) / "run_search.py").as_posix()}",\n')
+        f.write(f'"python":"{Path(python_bin).as_posix()}",\n')
+        f.write(f'"SPECOLLATE":"{(Path(spe_collate_dest) / "run_search.py").as_posix()}",\n')
+        f.write(f'"PROTEORIFT":"{(Path(proteo_dest) / "run_search.py").as_posix()}",\n')
         f.write(f'"MODEL":"{Path(model_filepath).as_posix()}",\n')
         f.write(f'"MODEL_2":"{Path(model_2_filepath).as_posix()}",\n')
         f.write(f'"SPECOLLATE_CONFIG":"{(Path(path) / "config.ini").as_posix()}"\n')
