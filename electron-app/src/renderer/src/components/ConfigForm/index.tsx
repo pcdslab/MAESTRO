@@ -16,6 +16,7 @@ import {
 import FolderSelector from '../FolderSelector'
 import { configBuilderV2 } from '@renderer/utils/helper'
 import { useState } from 'react'
+import Divider from '@mui/material/Divider'
 
 const ConfigForm = ({ run }: any) => {
   const [useGpu, setUseGpu] = useState(false)
@@ -29,17 +30,17 @@ const ConfigForm = ({ run }: any) => {
   } = useForm({
     mode: 'onTouched',
     defaultValues: {
-      spec_batch_size: 16384,
-      pep_batch_size: 4096,
+      spec_batch_size: 4,
+      pep_batch_size: 1,
 
-      search_spec_batch_size: 1024,
+      search_spec_batch_size: 0.5,
 
       precursor_tolerance: 20,
       precursor_tolerance_type: 'ppm',
 
       keep_psms: 5,
       num_mods: 1,
-      charge: 8,
+      charge: 4,
 
       length_filter: true,
       len_tol_neg: -1,
@@ -75,7 +76,7 @@ const ConfigForm = ({ run }: any) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box>
           <FolderSelector
-            label="MGF Directory"
+            label="Spectra Directory (MGF)"
             {...register('mgf_dir', { required: true })}
             error={errors.mgf_dir ? 'This field is required' : ''}
             onChange={(path) => setValue('mgf_dir', path, { shouldValidate: true })}
@@ -84,16 +85,7 @@ const ConfigForm = ({ run }: any) => {
         </Box>
         <Box margin="normal">
           <FolderSelector
-            label="Preprocessed Directory"
-            {...register('prep_dir', { required: true })}
-            error={errors.prep_dir ? 'This field is required' : ''}
-            onChange={(path) => setValue('prep_dir', path, { shouldValidate: true })}
-            value={watch('prep_dir')}
-          />
-        </Box>
-        <Box margin="normal">
-          <FolderSelector
-            label="Peptide Directory"
+            label="Peptide Database Directory (fasta)"
             error={errors.pep_dir ? 'This field is required' : ''}
             {...register('pep_dir', { required: true })}
             onChange={(path) => setValue('pep_dir', path, { shouldValidate: true })}
@@ -115,9 +107,12 @@ const ConfigForm = ({ run }: any) => {
             <TextField
               margin="normal"
               fullWidth
-              label="Spectra Batch Size"
+              label="Spectra Batch Size (GiB)"
               variant="outlined"
               type="number"
+              inputProps={{
+                step: 0.01
+              }}
               {...register('spec_batch_size', { required: true })}
               error={!!errors.spec_batch_size}
               helperText={errors.spec_batch_size ? 'This field is required' : ''}
@@ -127,9 +122,12 @@ const ConfigForm = ({ run }: any) => {
             <TextField
               margin="normal"
               fullWidth
-              label="Peptide Batch Size"
+              label="Peptide Batch Size (GiB)"
               variant="outlined"
               type="number"
+              inputProps={{
+                step: 0.01
+              }}
               {...register('pep_batch_size', { required: true })}
               error={!!errors.pep_batch_size}
               helperText={errors.pep_batch_size ? 'This field is required' : ''}
@@ -139,12 +137,27 @@ const ConfigForm = ({ run }: any) => {
             <TextField
               margin="normal"
               fullWidth
-              label="Search Spectra Batch Size"
+              label="Search Spectra Batch Size (GiB)"
               variant="outlined"
               type="number"
+              inputProps={{
+                step: 0.01
+              }}
               {...register('search_spec_batch_size', { required: true })}
               error={!!errors.search_spec_batch_size}
               helperText={errors.search_spec_batch_size ? 'This field is required' : ''}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Number of Top Scoring PSMs to Keep"
+              variant="outlined"
+              type="number"
+              {...register('keep_psms', { required: true })}
+              error={!!errors.keep_psms}
+              helperText={errors.keep_psms ? 'This field is required' : ''}
             />
           </Grid>
           <Grid item xs={6}>
@@ -174,18 +187,7 @@ const ConfigForm = ({ run }: any) => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={6}>
-            <TextField
-              margin="normal"
-              fullWidth
-              label="Number of Top Scoring PSMs to Keep"
-              variant="outlined"
-              type="number"
-              {...register('keep_psms', { required: true })}
-              error={!!errors.keep_psms}
-              helperText={errors.keep_psms ? 'This field is required' : ''}
-            />
-          </Grid>
+
           <Grid item xs={6}>
             <TextField
               margin="normal"
@@ -211,18 +213,56 @@ const ConfigForm = ({ run }: any) => {
             />
           </Grid>
 
+          <Box width={'100%'} sx={{ marginLeft: 2, marginTop: 2, fontFamily: 500 }}>
+            <Divider />
+            <Typography variant="h5" mt={2} mb={2}>
+              Search space reduction using the following
+            </Typography>
+          </Box>
           {/* Filters */}
+          <Box display="flex" justifyContent="center" width={'100%'}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={watch('length_filter')}
+                  onChange={(e) => setValue('length_filter', e.target.checked)}
+                />
+              }
+              label="Length Filter"
+            />
+          </Box>
+          {watch('length_filter') && (
+            <>
+              <Grid item xs={6}>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  label="Length Tolerance Negative"
+                  variant="outlined"
+                  type="number"
+                  {...register('len_tol_neg', { required: true })}
+                  error={!!errors.len_tol_neg}
+                  helperText={errors.len_tol_neg ? 'This field is required' : ''}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  label="Length Tolerance Positive"
+                  variant="outlined"
+                  type="number"
+                  {...register('len_tol_pos', { required: true })}
+                  error={!!errors.len_tol_pos}
+                  helperText={errors.len_tol_pos ? 'This field is required' : ''}
+                />
+              </Grid>
+            </>
+          )}
+          <Box></Box>
           <Grid item xs={12}>
             <Box display="flex" justifyContent="center">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={watch('length_filter')}
-                    onChange={(e) => setValue('length_filter', e.target.checked)}
-                  />
-                }
-                label="Length Filter"
-              />
               <FormControlLabel
                 control={
                   <Checkbox
@@ -245,35 +285,10 @@ const ConfigForm = ({ run }: any) => {
           </Grid>
 
           {/* Text fields at the bottom */}
-          <Grid item xs={6}>
-            <TextField
-              margin="normal"
-              fullWidth
-              label="Length Tolerance Negative"
-              variant="outlined"
-              type="number"
-              {...register('len_tol_neg', { required: true })}
-              error={!!errors.len_tol_neg}
-              helperText={errors.len_tol_neg ? 'This field is required' : ''}
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <TextField
-              margin="normal"
-              fullWidth
-              label="Length Tolerance Positive"
-              variant="outlined"
-              type="number"
-              {...register('len_tol_pos', { required: true })}
-              error={!!errors.len_tol_pos}
-              helperText={errors.len_tol_pos ? 'This field is required' : ''}
-            />
-          </Grid>
         </Grid>
 
-        <Button type="submit" variant="contained" color="primary">
-          Run ProteoRift
+        <Button sx={{ marginTop: 2 }} type="submit" variant="contained" color="primary">
+          Run Maestro
         </Button>
       </form>
     </Container>
