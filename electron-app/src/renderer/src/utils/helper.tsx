@@ -174,6 +174,9 @@ keep_psms : ${data.keep_psms} # Number of top scoring psms to keep
 # Different than the one in input section
 num_mods : ${data.num_mods}
 
+# PTM Mods
+ptm_mods: ${JSON.stringify(data.ptm_mods)}
+
 charge: ${data.charge} # charge to be used during search
 
 ############ FILTERING PARAMETERS ############

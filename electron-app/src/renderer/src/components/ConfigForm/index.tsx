@@ -17,6 +17,7 @@ import FolderSelector from '../FolderSelector'
 import { configBuilderV2 } from '@renderer/utils/helper'
 import { useState } from 'react'
 import Divider from '@mui/material/Divider'
+import { Mods } from './Mods'
 
 const ConfigForm = ({ run }: any) => {
   const [useGpu, setUseGpu] = useState(false)
@@ -26,6 +27,8 @@ const ConfigForm = ({ run }: any) => {
     handleSubmit,
     setValue,
     formState: { errors },
+    control,
+    getValues,
     watch
   } = useForm({
     mode: 'onTouched',
@@ -46,7 +49,8 @@ const ConfigForm = ({ run }: any) => {
       len_tol_neg: -1,
       len_tol_pos: 1,
       missed_cleavages_filter: true,
-      modification_filter: true
+      modification_filter: true,
+      ptm_mods: []
     } as any
   })
 
@@ -187,7 +191,6 @@ const ConfigForm = ({ run }: any) => {
               </Select>
             </FormControl>
           </Grid>
-
           <Grid item xs={6}>
             <TextField
               margin="normal"
@@ -213,6 +216,32 @@ const ConfigForm = ({ run }: any) => {
             />
           </Grid>
 
+          <Grid item xs={12}>
+            {/* <FormControl fullWidth variant="outlined" margin="normal">
+              <InputLabel id="multi-select-label-ptm">
+                PTM (Post-Translational Modification)
+              </InputLabel>
+              <Select
+                labelId="multi-select-label-ptm"
+                id="multi-select"
+                multiple
+                value={watch()?.ptm_mods || []}
+                onChange={(e) => setValue('ptm_mods', e.target.value)}
+                label="PTM (Post-Translational Modification)" // Add the label prop to match the InputLabel
+                renderValue={(selected: String[]) =>
+                  selected.map((i) => type_ptms.find((y) => y.value === i)?.label).join(', ') || ''
+                }
+              >
+                {type_ptms.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    <Checkbox checked={watch()?.ptm_mods?.indexOf(option.value) > -1} />
+                    <ListItemText primary={option.label} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl> */}
+            <Mods control={control} />
+          </Grid>
           <Box width={'100%'} sx={{ marginLeft: 2, marginTop: 2, fontFamily: 500 }}>
             <Divider />
             <Typography variant="h5" mt={2} mb={2}>
